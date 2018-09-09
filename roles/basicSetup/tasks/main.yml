@@ -1,0 +1,63 @@
+---
+
+#    - name: YUM config
+#      yum:
+#        name: '{{ item }}'
+#        state: installed
+#      with_items:
+#        - 'ntp'
+#        - 'telnet'
+#        - 'vim'
+#        - 'python'
+#        - 'python-pip'
+#        - 'libselinux-python'
+#        - 'nginx'
+#        - 'firewalld'
+#
+    - name: yum update
+      yum:
+        name: '*'
+        state: latest
+
+    - name: config NTP
+      copy:
+        src: ntp.conf
+        dest: /etc/ntp.conf
+
+    - name: Shutdown IPtables
+      service:
+        name: firewalld
+        state: stopped
+
+    - name: Disable SELINUX
+      selinux:
+        policy: targeted
+        state: disabled
+
+    - name: Set ulimit
+      copy:
+        dest: /etc/security/limits.conf
+        src: files/limits.conf
+
+    - name: Set overcommit memory = 1
+      lineinfile:
+        dest: /etc/sysctl.conf
+        state: present
+        regexp: '^vm.overcommit_memory = 1'
+        line: 'vm.overcommit_memory = 1'
+
+    - name: Reload sysctl
+      command: sysctl vm.overcommit_memory=1
+
+    - name: Disable transparent huge pages
+      shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+
+    - name: Set timezone
+      timezone:
+        name: Asia/Kolkata
+
+    - name: Start NTP
+      service:
+        name: ntpd
+        state: started
+

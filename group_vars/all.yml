@@ -1,0 +1,5 @@
+quorum: 1
+port: 6379
+masterIP: 10.143.24.207
+down_after_milliseconds: 5000
+failover_timeout: 10000

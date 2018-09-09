@@ -1,0 +1,11 @@
+[Unit]
+Description=Redis Sentinel
+After=network.target
+
+[Service]
+User=redis
+ExecStart=/bin/redis-sentinel "/etc/redis-sentinel.conf"
+ExecStop=/bin/kill -9 $MAINPID
+
+[Install]
+WantedBy=multi-user.target

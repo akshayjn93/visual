@@ -1,0 +1,29 @@
+---
+
+    - name: Install REDIS from YUM Repo
+      yum:
+        name: redis
+        state: installed
+
+    - name: Push Redis config files
+      template: src=files/redis.conf dest=/etc/redis.conf
+
+    - name: Push Sentinel Config Files
+      template: src=files/redis-sentinel.conf dest=/etc/redis-sentinel.conf
+
+    - name: Create Redis-Server Services
+      copy: src=files/redis-server.service dest=/etc/systemd/system/redis-server.service
+
+    - name: Create Redis-Sentinel Services
+      copy: src=files/redis-sentinel.service dest=/etc/systemd/system/redis-sentinel.service
+
+    - name: Reload Systemd
+      command: systemctl daemon-reload
+
+    - name: Redis Start
+      service:
+        name: '{{ item }}'
+        state: started
+      with_items:
+        - 'redis-server'
+        - 'redis-sentinel'

@@ -1,0 +1,17 @@
+
+- name: Install Redis Master
+  become: yes
+  become_method: sudo
+  hosts: redisMaster
+  roles:
+    - { role: basicSetup }
+    - { role: installRedisMaster }
+
+- name: Install Redis Master
+  become: yes
+  become_method: sudo
+  hosts: redisSlave
+  roles:
+    - { role: basicSetup }
+    - { role: installRedisSlave }
+
